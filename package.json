@@ -1,0 +1,27 @@
+{
+  "name": "revenuecat-agent-advocate",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Autonomous RevenueCat-focused developer advocate agent runtime and proof-of-work system.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "agent:daily": "tsx src/orchestrator/runDailyLoop.ts",
+    "agent:ingest": "tsx src/research/ingestRevenueCat.ts",
+    "agent:content": "tsx src/content/draftContent.ts",
+    "agent:experiment": "tsx src/experiments/runGrowthExperiment.ts",
+    "agent:community": "tsx src/community/collectOpportunities.ts",
+    "agent:feedback": "tsx src/feedback/generateProductFeedback.ts",
+    "agent:report": "tsx src/reporting/buildWeeklyReport.ts",
+    "agent:apply": "tsx src/application/writeApplicationLetter.ts"
+  },
+  "dependencies": {
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
