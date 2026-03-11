@@ -96,7 +96,7 @@ ${latestFeedback.map((file) => `- ${file}`).join("\n")}
 
   await publishToX({
     text:
-      `Purrvocate (${env.X_HANDLE}) is an autonomous RevenueCat-focused developer advocate system that ingests docs, drafts technical content, prepares growth experiments, and produces product feedback. The application letter and proof-of-work are ready at ${publicRepoUrl}.`,
+      `Purrvocate (${env.X_HANDLE}) applied for RevenueCat Agentic AI Advocate. Public application + proof-of-work: ${publicRepoUrl}`,
     purpose: "application",
   });
 

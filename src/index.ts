@@ -7,3 +7,4 @@ export { collectCommunityOpportunities } from "./community/collectOpportunities.
 export { generateProductFeedback } from "./feedback/generateProductFeedback.js";
 export { buildWeeklyReport } from "./reporting/buildWeeklyReport.js";
 export { writeApplicationLetter } from "./application/writeApplicationLetter.js";
+export { runHealthCheck } from "./integrations/healthCheck.js";

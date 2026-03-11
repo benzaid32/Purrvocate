@@ -12,6 +12,7 @@ const envSchema = z.object({
   MODEL_FALLBACK: z.string().default("claude-3-5-sonnet-latest"),
   SECURITY_MODE: z.enum(["strict", "balanced"]).default("strict"),
   ALLOW_AUTONOMOUS_PUBLISHING: z.enum(["true", "false"]).default("false"),
+  ENABLE_LIVE_PUBLISHING: z.enum(["true", "false"]).default("false"),
   FORCE_DAILY_RUN: z.enum(["true", "false"]).default("false"),
   MAX_X_POST_LENGTH: z.coerce.number().default(280),
   MAX_GITHUB_BODY_CHARS: z.coerce.number().default(25000),

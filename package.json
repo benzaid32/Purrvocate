@@ -14,9 +14,13 @@
     "agent:community": "tsx src/community/collectOpportunities.ts",
     "agent:feedback": "tsx src/feedback/generateProductFeedback.ts",
     "agent:report": "tsx src/reporting/buildWeeklyReport.ts",
-    "agent:apply": "tsx src/application/writeApplicationLetter.ts"
+    "agent:apply": "tsx src/application/writeApplicationLetter.ts",
+    "agent:health": "tsx src/integrations/healthCheck.ts"
   },
   "dependencies": {
+    "@octokit/rest": "^22.0.1",
+    "openai": "^6.27.0",
+    "twitter-api-v2": "^1.29.0",
     "zod": "^4.1.5"
   },
   "devDependencies": {

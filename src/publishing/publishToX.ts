@@ -1,4 +1,5 @@
 import path from "node:path";
+import { TwitterApi } from "twitter-api-v2";
 import { env } from "../config/env.js";
 import { readJson, writeJson } from "../lib/fs.js";
 import { generatedDir } from "../lib/paths.js";
@@ -49,8 +50,18 @@ export async function publishToX(post: XPost): Promise<{ status: string; reasons
   });
   await writeJson(queuePath, queue);
 
+  if (decision.status === "ready") {
+    const client = new TwitterApi({
+      appKey: env.X_API_KEY ?? "",
+      appSecret: env.X_API_SECRET ?? "",
+      accessToken: env.X_ACCESS_TOKEN ?? "",
+      accessSecret: env.X_ACCESS_SECRET ?? "",
+    });
+    await client.v2.tweet(post.text);
+  }
+
   return {
-    status: decision.status === "ready" ? "ready-for-api-integration" : "queued-local-only",
+    status: decision.status === "ready" ? "published" : "queued-local-only",
     reasons: decision.reasons,
   };
 }

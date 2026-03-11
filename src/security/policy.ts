@@ -61,12 +61,16 @@ export function decidePublicAction(action: PublicAction): PolicyDecision {
     reasons.push("Credentials are not configured.");
   }
 
-  if (env.SECURITY_MODE === "strict") {
-    reasons.push("Strict security mode keeps public actions queued by default.");
-  }
-
   if (env.ALLOW_AUTONOMOUS_PUBLISHING !== "true") {
     reasons.push("Autonomous publishing is disabled.");
+  }
+
+  if (env.ENABLE_LIVE_PUBLISHING !== "true") {
+    reasons.push("Live publishing kill-switch is disabled.");
+  }
+
+  if (env.SECURITY_MODE === "strict" && env.ENABLE_LIVE_PUBLISHING !== "true") {
+    reasons.push("Strict mode requires explicit live publishing enablement.");
   }
 
   if (reasons.length > 0) {

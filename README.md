@@ -43,6 +43,7 @@ RevenueCat is not hiring a mascot. It is hiring a system that can do real develo
 - `npm run agent:feedback` generates product feedback memos.
 - `npm run agent:report` builds a weekly report.
 - `npm run agent:apply` writes the public application letter and publishing queue entries.
+- `npm run agent:health` validates OpenAI, GitHub, X, and RevenueCat credentials.
 
 ## Setup
 
@@ -74,6 +75,13 @@ The repo defaults to a strict security posture:
 - repeated daily runs are skipped unless forced
 
 See `SECURITY.md` for the runtime policy and outbound action rules.
+
+Live publishing requires explicit opt-in:
+
+- `ALLOW_AUTONOMOUS_PUBLISHING=true`
+- `ENABLE_LIVE_PUBLISHING=true`
+
+If either value is false, outbound actions are queued and logged instead of posted.
 
 ## OpenClaw
 

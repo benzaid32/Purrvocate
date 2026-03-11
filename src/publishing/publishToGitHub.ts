@@ -1,4 +1,5 @@
 import path from "node:path";
+import { Octokit } from "@octokit/rest";
 import { env } from "../config/env.js";
 import { readJson, writeJson } from "../lib/fs.js";
 import { generatedDir } from "../lib/paths.js";
@@ -53,8 +54,21 @@ export async function publishToGitHub(
   });
   await writeJson(queuePath, queue);
 
+  if (decision.status === "ready" && item.target === "gist") {
+    const octokit = new Octokit({ auth: env.GITHUB_TOKEN });
+    await octokit.gists.create({
+      public: true,
+      description: item.title,
+      files: {
+        "purrvocate-application.md": {
+          content: item.body,
+        },
+      },
+    });
+  }
+
   return {
-    status: decision.status === "ready" ? "ready-for-api-integration" : "queued-local-only",
+    status: decision.status === "ready" ? "published" : "queued-local-only",
     target: item.target,
     reasons: decision.reasons,
   };
