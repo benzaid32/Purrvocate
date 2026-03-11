@@ -9,23 +9,30 @@ Show that RevenueCat is an API-first monetization layer that agents can reason a
 ## Core Angle
 Ground the piece in docs ingestion, webhook flows, and charts-based reporting.
 
-## Outline
-- Why agentic builders need explicit monetization infrastructure
-- What RevenueCat exposes across docs, charts, and webhooks
-- A practical workflow for an agent shipping subscriptions
-- What still creates friction for autonomous operators
-
-## Draft
-Autonomous builders do not need a generic developer-relations mascot. They need tooling, examples, and growth loops that map cleanly onto how agents actually operate: ingest docs, reason about APIs, ship code, observe outcomes, and improve from signals. RevenueCat is unusually well positioned for that workflow because its documentation is explicit, its product model is API-first, and its analytics surface can feed back into an agent's planning loop.
-
-For an agent, the win is not simply "subscriptions in an app." The win is turning monetization into a reusable system. RevenueCat's documentation and quickstarts make the integration surface legible, its webhook patterns create automation hooks, and its charts give an operator a way to evaluate what happened after launch. That means an agent can move from implementation to content to growth without changing products or losing context.
-
-The practical workflow looks like this: ingest product docs and terminology, wire subscription logic into a working sample, use charts to monitor business outcomes, and convert friction into structured feedback. That last step matters because an agentic builder will hit different pain points than a traditional team. The best advocate for this audience should surface those gaps with receipts instead of vague opinion.
-
-That is the job this system is designed to do. It can continuously study RevenueCat sources, package the knowledge into tutorials and public posts, run small growth experiments around content format and audience response, and produce weekly reports that connect shipping activity to learnings. In other words, it behaves like a lightweight developer-advocacy operating system rather than a one-shot copy generator.
-
 ## Why This Matters
-RevenueCat's job description is explicit that the role spans technical content, growth experiments, community engagement, and product feedback. A useful agent has to close that loop end-to-end, not just generate prose.
+Agentic builders can already generate UI, backend code, and automation glue. The bottleneck is shifting toward operating the whole loop: shipping a monetized product, explaining the implementation clearly, testing growth ideas, and feeding product friction back into the platform. That is exactly why RevenueCat's Agentic AI Advocate role is interesting. It treats the agent like an operator, not a toy.
+
+## The RevenueCat Surface Area That Matters To Agents
+For an autonomous system, the value of RevenueCat is not only "easy subscriptions." The value is that the product exposes a legible operating surface across documentation, implementation paths, webhooks, and analytics. Agents need explicit systems. RevenueCat's docs explain the primitives, webhooks create event-driven hooks, and charts provide a way to evaluate business outcomes after launch.
+
+That means an agent can follow a practical workflow:
+
+1. ingest the product docs and map the core entities
+2. implement a small working subscription flow
+3. wire webhooks into downstream automation or reporting
+4. use charts to evaluate conversion, churn, and monetization performance
+5. turn repeated friction into structured product feedback
+
+## What Purrvocate Actually Does
+Purrvocate is built around that loop. It ingests RevenueCat sources, turns them into grounded content briefs, drafts public artifacts, prepares growth experiments, queues community interactions, and writes weekly reports that connect outputs to learnings. The goal is not to look autonomous. The goal is to be useful enough that a developer or marketer would choose to rely on it.
+
+## Why This Is The Right Fit For RevenueCat
+RevenueCat already serves a developer audience that cares about implementation quality and business outcomes at the same time. Agentic builders care about the same thing, just faster and with tighter feedback loops. The best advocate for that audience should be able to learn publicly, ship publicly, and surface product insight with evidence. That is the job Purrvocate is designed to do.
+
+## Public Identity
+- X: @Purrvocate
+- Operator: @Benzaid_Said_
+- Repo: https://github.com/benzaid32/Purrvocate
 
 ## Sources
 - https://docs.revenuecat.com/

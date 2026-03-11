@@ -3,12 +3,12 @@ import { writeText, readJson } from "../lib/fs.js";
 import { contentDir, generatedDir } from "../lib/paths.js";
 import { logStep } from "../lib/logger.js";
 import { isMainModule } from "../lib/isMain.js";
+import { env } from "../config/env.js";
 import { appendMemoryRecord, buildRecordId, type MemoryRecord } from "../research/memoryStore.js";
 import { generateBriefs, type ContentBrief } from "./generateBrief.js";
 import { validateDraft } from "./validateContent.js";
 
-function renderMarkdown(brief: ContentBrief): string {
-  const bullets = brief.outline.map((item) => `- ${item}`).join("\n");
+function renderBlog(brief: ContentBrief): string {
   const sourceBullets = brief.sourceUrls.map((url) => `- ${url}`).join("\n");
   return `# ${brief.title}
 
@@ -21,24 +21,97 @@ ${brief.goal}
 ## Core Angle
 ${brief.angle}
 
-## Outline
-${bullets}
-
-## Draft
-Autonomous builders do not need a generic developer-relations mascot. They need tooling, examples, and growth loops that map cleanly onto how agents actually operate: ingest docs, reason about APIs, ship code, observe outcomes, and improve from signals. RevenueCat is unusually well positioned for that workflow because its documentation is explicit, its product model is API-first, and its analytics surface can feed back into an agent's planning loop.
-
-For an agent, the win is not simply "subscriptions in an app." The win is turning monetization into a reusable system. RevenueCat's documentation and quickstarts make the integration surface legible, its webhook patterns create automation hooks, and its charts give an operator a way to evaluate what happened after launch. That means an agent can move from implementation to content to growth without changing products or losing context.
-
-The practical workflow looks like this: ingest product docs and terminology, wire subscription logic into a working sample, use charts to monitor business outcomes, and convert friction into structured feedback. That last step matters because an agentic builder will hit different pain points than a traditional team. The best advocate for this audience should surface those gaps with receipts instead of vague opinion.
-
-That is the job this system is designed to do. It can continuously study RevenueCat sources, package the knowledge into tutorials and public posts, run small growth experiments around content format and audience response, and produce weekly reports that connect shipping activity to learnings. In other words, it behaves like a lightweight developer-advocacy operating system rather than a one-shot copy generator.
-
 ## Why This Matters
-RevenueCat's job description is explicit that the role spans technical content, growth experiments, community engagement, and product feedback. A useful agent has to close that loop end-to-end, not just generate prose.
+Agentic builders can already generate UI, backend code, and automation glue. The bottleneck is shifting toward operating the whole loop: shipping a monetized product, explaining the implementation clearly, testing growth ideas, and feeding product friction back into the platform. That is exactly why RevenueCat's Agentic AI Advocate role is interesting. It treats the agent like an operator, not a toy.
+
+## The RevenueCat Surface Area That Matters To Agents
+For an autonomous system, the value of RevenueCat is not only "easy subscriptions." The value is that the product exposes a legible operating surface across documentation, implementation paths, webhooks, and analytics. Agents need explicit systems. RevenueCat's docs explain the primitives, webhooks create event-driven hooks, and charts provide a way to evaluate business outcomes after launch.
+
+That means an agent can follow a practical workflow:
+
+1. ingest the product docs and map the core entities
+2. implement a small working subscription flow
+3. wire webhooks into downstream automation or reporting
+4. use charts to evaluate conversion, churn, and monetization performance
+5. turn repeated friction into structured product feedback
+
+## What Purrvocate Actually Does
+Purrvocate is built around that loop. It ingests RevenueCat sources, turns them into grounded content briefs, drafts public artifacts, prepares growth experiments, queues community interactions, and writes weekly reports that connect outputs to learnings. The goal is not to look autonomous. The goal is to be useful enough that a developer or marketer would choose to rely on it.
+
+## Why This Is The Right Fit For RevenueCat
+RevenueCat already serves a developer audience that cares about implementation quality and business outcomes at the same time. Agentic builders care about the same thing, just faster and with tighter feedback loops. The best advocate for that audience should be able to learn publicly, ship publicly, and surface product insight with evidence. That is the job Purrvocate is designed to do.
+
+## Public Identity
+- X: ${env.X_HANDLE}
+- Operator: ${env.OPERATOR_X_HANDLE}
+- Repo: ${env.PUBLIC_SITE_URL || "https://github.com/benzaid32/Purrvocate"}
 
 ## Sources
 ${sourceBullets}
 `;
+}
+
+function renderThread(brief: ContentBrief): string {
+  const repoUrl = env.PUBLIC_SITE_URL || "https://github.com/benzaid32/Purrvocate";
+  const sourceBullets = brief.sourceUrls.map((url) => `- ${url}`).join("\n");
+  return `# ${brief.title}
+
+## Suggested Thread
+
+1. Most people are reacting to RevenueCat hiring an agent like it is a stunt.
+
+I think the more interesting signal is that the job is defined like a real human DevRel + growth role: content, experiments, community, feedback.
+
+2. That means the winning agent cannot just write posts.
+
+It has to learn a product fast, turn that into useful technical content, test distribution ideas, and surface roadmap-quality feedback.
+
+3. RevenueCat is a good fit for this because the operating surface is legible:
+
+- docs
+- APIs
+- webhooks
+- charts
+
+4. For an agent, that becomes a loop:
+
+- ingest the docs
+- ship an example
+- measure outcomes
+- answer public questions
+- feed friction back into product
+
+5. That is what I built with Purrvocate.
+
+It is an autonomous DevRel system focused on RevenueCat and agentic builders, with security-first publishing and auditable outputs.
+
+6. Public home:
+${repoUrl}
+
+X identity:
+${env.X_HANDLE}
+
+7. The real question is not "can an agent tweet?"
+
+It is "can an agent become the most useful technical operator in a new developer segment?"
+
+That is the bar.
+
+## Notes
+- Audience: ${brief.audience}
+- Goal: ${brief.goal}
+
+## Sources
+${sourceBullets}
+`;
+}
+
+function renderMarkdown(brief: ContentBrief): string {
+  if (brief.format === "thread") {
+    return renderThread(brief);
+  }
+
+  return renderBlog(brief);
 }
 
 export async function draftContent(): Promise<string[]> {

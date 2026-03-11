@@ -15,6 +15,8 @@ const envSchema = z.object({
   FORCE_DAILY_RUN: z.enum(["true", "false"]).default("false"),
   MAX_X_POST_LENGTH: z.coerce.number().default(280),
   MAX_GITHUB_BODY_CHARS: z.coerce.number().default(25000),
+  X_HANDLE: z.string().default("@Purrvocate"),
+  OPERATOR_X_HANDLE: z.string().default("@Benzaid_Said_"),
   X_BEARER_TOKEN: z.string().optional(),
   X_API_KEY: z.string().optional(),
   X_API_SECRET: z.string().optional(),
