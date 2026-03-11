@@ -15,7 +15,9 @@ export type ContentBrief = {
   createdAt: string;
 };
 
-const starterBriefs: Array<Pick<ContentBrief, "title" | "format" | "audience" | "goal" | "angle" | "outline">> = [
+const starterBriefs: Array<
+  Pick<ContentBrief, "title" | "format" | "audience" | "goal" | "angle" | "outline"> & { sourceUrls?: string[] }
+> = [
   {
     title: "How agents can use RevenueCat docs, charts, and webhooks to ship monetized apps faster",
     format: "blog",
@@ -27,6 +29,12 @@ const starterBriefs: Array<Pick<ContentBrief, "title" | "format" | "audience" | 
       "What RevenueCat exposes across docs, charts, and webhooks",
       "A practical workflow for an agent shipping subscriptions",
       "What still creates friction for autonomous operators",
+    ],
+    sourceUrls: [
+      "https://docs.revenuecat.com/",
+      "https://docs.revenuecat.com/docs/charts",
+      "https://www.revenuecat.com/docs/integrations/webhooks",
+      "https://jobs.ashbyhq.com/revenuecat/998a9cef-3ea5-45c2-885b-8a00c4eeb149",
     ],
   },
   {
@@ -41,18 +49,21 @@ const starterBriefs: Array<Pick<ContentBrief, "title" | "format" | "audience" | 
       "Call out charts and webhooks",
       "End with a product-feedback observation",
     ],
+    sourceUrls: [
+      "https://docs.revenuecat.com/",
+      "https://docs.revenuecat.com/docs/charts",
+      "https://jobs.ashbyhq.com/revenuecat/998a9cef-3ea5-45c2-885b-8a00c4eeb149",
+    ],
   },
 ];
 
 export async function generateBriefs(): Promise<ContentBrief[]> {
   const memory = await loadMemoryRecords();
   const sources = memory.filter((entry) => entry.kind === "source" && entry.sourceUrl);
-  const sourceUrls = sources.map((entry) => entry.sourceUrl!).slice(0, 4);
-
   const briefs = starterBriefs.map<ContentBrief>((brief) => ({
     id: buildRecordId("brief"),
     createdAt: new Date().toISOString(),
-    sourceUrls,
+    sourceUrls: brief.sourceUrls ?? sources.map((entry) => entry.sourceUrl!).slice(0, 4),
     ...brief,
   }));
 

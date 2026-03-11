@@ -4,9 +4,11 @@ import { env } from "../config/env.js";
 import { readJson, writeJson } from "../lib/fs.js";
 import { generatedDir } from "../lib/paths.js";
 import { auditAction, decidePublicAction } from "../security/policy.js";
+import { hashContent, loadPublishState, savePublishState } from "./publishState.js";
 
 type XPost = {
-  text: string;
+  text?: string;
+  thread?: string[];
   purpose: "distribution" | "engagement" | "application";
 };
 
@@ -17,12 +19,14 @@ type QueuedXPost = XPost & {
 };
 
 export async function publishToX(post: XPost): Promise<{ status: string; reasons: string[] }> {
+  const payload = post.thread?.join("\n\n") ?? post.text ?? "";
+  const hasOAuth1 = Boolean(env.X_API_KEY && env.X_API_SECRET && env.X_ACCESS_TOKEN && env.X_ACCESS_SECRET);
   const decision = decidePublicAction({
     target: "x",
     purpose: post.purpose,
     summary: `X ${post.purpose} post`,
-    payload: post.text,
-    credentialConfigured: Boolean(env.X_BEARER_TOKEN || env.X_API_KEY),
+    payload,
+    credentialConfigured: hasOAuth1,
   });
 
   await auditAction(
@@ -30,8 +34,8 @@ export async function publishToX(post: XPost): Promise<{ status: string; reasons
       target: "x",
       purpose: post.purpose,
       summary: `X ${post.purpose} post`,
-      payload: post.text,
-      credentialConfigured: Boolean(env.X_BEARER_TOKEN || env.X_API_KEY),
+      payload,
+      credentialConfigured: hasOAuth1,
     },
     decision,
   );
@@ -51,13 +55,44 @@ export async function publishToX(post: XPost): Promise<{ status: string; reasons
   await writeJson(queuePath, queue);
 
   if (decision.status === "ready") {
+    const state = await loadPublishState();
+    const contentHash = hashContent(payload);
+    const existing = state.xPosts[post.purpose];
+    if (existing && existing.contentHash === contentHash) {
+      return {
+        status: "already-published",
+        reasons: [],
+      };
+    }
+
     const client = new TwitterApi({
       appKey: env.X_API_KEY ?? "",
       appSecret: env.X_API_SECRET ?? "",
       accessToken: env.X_ACCESS_TOKEN ?? "",
       accessSecret: env.X_ACCESS_SECRET ?? "",
     });
-    await client.v2.tweet(post.text);
+    let finalId = "";
+    if (post.thread && post.thread.length > 0) {
+      let replyToId: string | undefined;
+      for (const segment of post.thread) {
+        const created = await client.v2.tweet(segment, replyToId ? { reply: { in_reply_to_tweet_id: replyToId } } : {});
+        replyToId = created.data.id;
+        if (!finalId) {
+          finalId = created.data.id;
+        }
+      }
+    } else {
+      const created = await client.v2.tweet(post.text ?? "");
+      finalId = created.data.id;
+    }
+
+    const handle = env.X_HANDLE.replace(/^@/, "");
+    state.xPosts[post.purpose] = {
+      id: finalId,
+      url: `https://x.com/${handle}/status/${finalId}`,
+      contentHash,
+    };
+    await savePublishState(state);
   }
 
   return {

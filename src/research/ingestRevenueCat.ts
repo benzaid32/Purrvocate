@@ -9,6 +9,7 @@ type SourceSeed = {
   title: string;
   url: string;
   tags: string[];
+  minChars?: number;
 };
 
 const sourceSeeds: SourceSeed[] = [
@@ -31,6 +32,7 @@ const sourceSeeds: SourceSeed[] = [
     title: "RevenueCat Agentic AI Advocate Job Post",
     url: "https://jobs.ashbyhq.com/revenuecat/998a9cef-3ea5-45c2-885b-8a00c4eeb149",
     tags: ["job", "role", "growth"],
+    minChars: 50,
   },
 ];
 
@@ -65,8 +67,14 @@ export async function ingestRevenueCatSources(): Promise<MemoryRecord[]> {
         "User-Agent": "RevenueCatAgentAdvocate/0.1",
       },
     });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${source.url}: HTTP ${response.status}`);
+    }
     const html = await response.text();
     const stripped = stripHtml(html);
+    if (stripped.length < (source.minChars ?? 500)) {
+      throw new Error(`Fetched source is too short to trust for ${source.url}`);
+    }
     const summary = summarizeText(source.title, stripped);
     const slug = source.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     await writeText(path.join(cacheDir, `${slug}.txt`), stripped);
@@ -88,6 +96,7 @@ export async function ingestRevenueCatSources(): Promise<MemoryRecord[]> {
       createdAt: new Date().toISOString(),
       metadata: {
         characters: stripped.length,
+        excerpt: stripped.slice(0, 4000),
       },
     };
     await appendMemoryRecord(record);

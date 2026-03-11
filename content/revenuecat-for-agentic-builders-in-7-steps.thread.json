@@ -1,0 +1,9 @@
+[
+  "Monetizing agentic apps means handling subscriptions, churn, and user events at scale. RevenueCat offers a focused workflow to manage this complexity across platforms.",
+  "Start by installing the RevenueCat SDK in your app. The docs provide SDK quickstarts for major platforms, making integration straightforward for new or existing apps.",
+  "Configure your products and entitlements in the RevenueCat dashboard. This step defines what users can purchase and unlocks cross-platform management for your app's offerings.",
+  "Enable subscriptions and connect your app stores. RevenueCat abstracts store-specific quirks, letting you focus on product logic instead of receipt validation and edge cases.",
+  "Use RevenueCat Charts for real-time insights: revenue, churn, LTV, and conversion data update automatically from purchase receipts—no client-side event logging required.",
+  "Set up webhooks to receive server-to-server notifications for subscription events. This keeps your backend in sync and enables automations like onboarding, reminders, or billing issue alerts.",
+  "Feedback: RevenueCat’s abstractions are powerful, but expect subtle data differences versus store dashboards. Always validate key metrics with production data and payment processors."
+]

@@ -7,7 +7,12 @@ export type ValidationResult = {
   reasons: string[];
 };
 
-export async function validateDraft(title: string, markdown: string, sources: string[]): Promise<ValidationResult> {
+export async function validateDraft(
+  title: string,
+  markdown: string,
+  sources: string[],
+  format?: "blog" | "thread" | "tutorial" | "gist",
+): Promise<ValidationResult> {
   const reasons: string[] = [];
 
   if (!markdown.includes("## Sources")) {
@@ -22,6 +27,16 @@ export async function validateDraft(title: string, markdown: string, sources: st
 
   if (markdown.length < 600) {
     reasons.push("Draft is too short to be credible.");
+  }
+
+  if (format === "thread") {
+    if (!markdown.includes("## Suggested Thread")) {
+      reasons.push("Thread draft must include a Suggested Thread section.");
+    }
+    const tweetCount = (markdown.match(/\n\d+\.\s/g) ?? []).length;
+    if (tweetCount < 5) {
+      reasons.push("Thread draft must include at least 5 numbered posts.");
+    }
   }
 
   const result = {

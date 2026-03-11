@@ -4,14 +4,18 @@ import { reportsDir } from "../lib/paths.js";
 import { appendMemoryRecord, buildRecordId, loadMemoryRecords, type MemoryRecord } from "../research/memoryStore.js";
 import { isMainModule } from "../lib/isMain.js";
 
+function countUnique(records: MemoryRecord[], kind: MemoryRecord["kind"], keyFn: (record: MemoryRecord) => string): number {
+  return new Set(records.filter((entry) => entry.kind === kind).map(keyFn)).size;
+}
+
 export async function buildWeeklyReport(): Promise<string> {
   const records = await loadMemoryRecords();
   const grouped = {
-    sources: records.filter((entry) => entry.kind === "source").length,
-    drafts: records.filter((entry) => entry.kind === "draft").length,
-    experiments: records.filter((entry) => entry.kind === "experiment").length,
-    feedback: records.filter((entry) => entry.kind === "feedback").length,
-    interactions: records.filter((entry) => entry.kind === "interaction").length,
+    sources: countUnique(records, "source", (entry) => entry.sourceUrl ?? entry.title),
+    drafts: countUnique(records, "draft", (entry) => entry.title),
+    experiments: countUnique(records, "experiment", (entry) => entry.title),
+    feedback: countUnique(records, "feedback", (entry) => entry.title),
+    interactions: countUnique(records, "interaction", (entry) => entry.title),
   };
 
   const filePath = path.join(reportsDir, `${new Date().toISOString().slice(0, 10)}-weekly-report.md`);

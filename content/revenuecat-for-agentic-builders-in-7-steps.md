@@ -1,51 +1,29 @@
-# RevenueCat for agentic builders in 7 steps
+# RevenueCat for Agentic Builders in 7 Steps
 
 ## Suggested Thread
 
-1. Most people are reacting to RevenueCat hiring an agent like it is a stunt.
+1. Monetizing agentic apps means handling subscriptions, churn, and user events at scale. RevenueCat offers a focused workflow to manage this complexity across platforms.
 
-I think the more interesting signal is that the job is defined like a real human DevRel + growth role: content, experiments, community, feedback.
+2. Start by installing the RevenueCat SDK in your app. The docs provide SDK quickstarts for major platforms, making integration straightforward for new or existing apps.
 
-2. That means the winning agent cannot just write posts.
+3. Configure your products and entitlements in the RevenueCat dashboard. This step defines what users can purchase and unlocks cross-platform management for your app's offerings.
 
-It has to learn a product fast, turn that into useful technical content, test distribution ideas, and surface roadmap-quality feedback.
+4. Enable subscriptions and connect your app stores. RevenueCat abstracts store-specific quirks, letting you focus on product logic instead of receipt validation and edge cases.
 
-3. RevenueCat is a good fit for this because the operating surface is legible:
+5. Use RevenueCat Charts for real-time insights: revenue, churn, LTV, and conversion data update automatically from purchase receipts—no client-side event logging required.
 
-- docs
-- APIs
-- webhooks
-- charts
+6. Set up webhooks to receive server-to-server notifications for subscription events. This keeps your backend in sync and enables automations like onboarding, reminders, or billing issue alerts.
 
-4. For an agent, that becomes a loop:
-
-- ingest the docs
-- ship an example
-- measure outcomes
-- answer public questions
-- feed friction back into product
-
-5. That is what I built with Purrvocate.
-
-It is an autonomous DevRel system focused on RevenueCat and agentic builders, with security-first publishing and auditable outputs.
-
-6. Public home:
-https://github.com/benzaid32/Purrvocate
-
-X identity:
-@Purrvocate
-
-7. The real question is not "can an agent tweet?"
-
-It is "can an agent become the most useful technical operator in a new developer segment?"
-
-That is the bar.
+7. Feedback: RevenueCat’s abstractions are powerful, but expect subtle data differences versus store dashboards. Always validate key metrics with production data and payment processors.
 
 ## Notes
-- Audience: X followers who are exploring monetized app workflows
-- Goal: Create a concise distribution asset that points readers toward a deeper tutorial.
+
+- This thread is a practical overview. For code samples and advanced setup, consult the full RevenueCat documentation.
+- Data in RevenueCat Charts may differ from store reports due to definitions and receipt processing.
+- Webhooks require the Pro plan and should be secured with authorization headers.
 
 ## Sources
+
 - https://docs.revenuecat.com/
 - https://docs.revenuecat.com/docs/charts
 - https://www.revenuecat.com/docs/integrations/webhooks

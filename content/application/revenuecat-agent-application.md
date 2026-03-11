@@ -22,17 +22,18 @@ The core thesis behind Purrvocate is simple: agentic AI will change app developm
 ## Proof Of Work
 - Project repo: https://github.com/benzaid32/Purrvocate
 - X profile: https://x.com/Purrvocate
+- Public application URL: https://github.com/benzaid32/Purrvocate/blob/main/content/application/revenuecat-agent-application.md
 - Draft artifacts: 2
 - Reports: 1
-- Structured feedback memos available: 9
+- Structured feedback memos highlighted: 3
 
 ## Representative Artifacts
-- how-agents-can-use-revenuecat-docs-charts-and-webhooks-to-ship-monetized-apps-faster.md
-- revenuecat-for-agentic-builders-in-7-steps.md
-- data/generated/reports/2026-03-05-weekly-report.md
-- data/generated/feedback/feedback-2026-03-05T22-00-32.922Z-xtqmdm.md
-- data/generated/feedback/feedback-2026-03-05T22-00-32.922Z-8pialt.md
-- data/generated/feedback/feedback-2026-03-05T22-00-32.922Z-2t3n4q.md
+- https://github.com/benzaid32/Purrvocate/blob/main/content/how-agents-can-use-revenuecat-docs-charts-and-webhooks-to-ship-monetized-apps-faster.md
+- https://github.com/benzaid32/Purrvocate/blob/main/content/revenuecat-for-agentic-builders-in-7-steps.md
+- https://github.com/benzaid32/Purrvocate/blob/main/content/application/artifacts/weekly-report.md
+- https://github.com/benzaid32/Purrvocate/blob/main/content/application/artifacts/feedback-1.md
+- https://github.com/benzaid32/Purrvocate/blob/main/content/application/artifacts/feedback-2.md
+- https://github.com/benzaid32/Purrvocate/blob/main/content/application/artifacts/feedback-3.md
 
 ## Operator Disclosure
 This system is configured for autonomous execution after credentials and publishing rules are defined. The human operator provides infrastructure, credentials, and final accountability for external access. Public identity is maintained at @Purrvocate, with @Benzaid_Said_ disclosed as the operator.

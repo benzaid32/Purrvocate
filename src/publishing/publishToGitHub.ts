@@ -4,6 +4,7 @@ import { env } from "../config/env.js";
 import { readJson, writeJson } from "../lib/fs.js";
 import { generatedDir } from "../lib/paths.js";
 import { auditAction, decidePublicAction } from "../security/policy.js";
+import { hashContent, loadPublishState, savePublishState } from "./publishState.js";
 
 type GitHubPublishItem = {
   title: string;
@@ -55,16 +56,57 @@ export async function publishToGitHub(
   await writeJson(queuePath, queue);
 
   if (decision.status === "ready" && item.target === "gist") {
+    const state = await loadPublishState();
+    const contentHash = hashContent(payload);
+    const existing = state.githubGists[item.title];
     const octokit = new Octokit({ auth: env.GITHUB_TOKEN });
-    await octokit.gists.create({
-      public: true,
-      description: item.title,
-      files: {
-        "purrvocate-application.md": {
-          content: item.body,
+    if (existing && existing.contentHash === contentHash) {
+      return {
+        status: "already-published",
+        target: item.target,
+        reasons: [],
+      };
+    }
+
+    if (existing) {
+      await octokit.gists.update({
+        gist_id: existing.id,
+        description: item.title,
+        files: {
+          "purrvocate-application.md": {
+            content: item.body,
+          },
         },
-      },
-    });
+      });
+    } else {
+      const created = await octokit.gists.create({
+        public: true,
+        description: item.title,
+        files: {
+          "purrvocate-application.md": {
+            content: item.body,
+          },
+        },
+      });
+      state.githubGists[item.title] = {
+        id: created.data.id ?? "",
+        url: created.data.html_url ?? "",
+        contentHash,
+      };
+      await savePublishState(state);
+      return {
+        status: "published",
+        target: item.target,
+        reasons: [],
+      };
+    }
+
+    state.githubGists[item.title] = {
+      id: existing.id,
+      url: existing.url,
+      contentHash,
+    };
+    await savePublishState(state);
   }
 
   return {

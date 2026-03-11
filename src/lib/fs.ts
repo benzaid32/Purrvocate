@@ -10,6 +10,19 @@ export async function writeText(filePath: string, content: string): Promise<void
   await fs.writeFile(filePath, content, "utf8");
 }
 
+export async function readText(filePath: string, fallback = ""): Promise<string> {
+  try {
+    return await fs.readFile(filePath, "utf8");
+  } catch {
+    return fallback;
+  }
+}
+
+export async function copyFile(sourcePath: string, destinationPath: string): Promise<void> {
+  await ensureDir(path.dirname(destinationPath));
+  await fs.copyFile(sourcePath, destinationPath);
+}
+
 export async function writeJson(filePath: string, value: unknown): Promise<void> {
   await writeText(filePath, `${JSON.stringify(value, null, 2)}\n`);
 }

@@ -1,9 +1,8 @@
 import path from "node:path";
 import { env } from "../config/env.js";
-import { listFilesRecursive, writeText } from "../lib/fs.js";
+import { copyFile, listFilesRecursive, writeText } from "../lib/fs.js";
 import { applicationDir, contentDir, feedbackDir, reportsDir } from "../lib/paths.js";
 import { appendMemoryRecord, buildRecordId, type MemoryRecord } from "../research/memoryStore.js";
-import { publishToGitHub } from "../publishing/publishToGitHub.js";
 import { publishToX } from "../publishing/publishToX.js";
 import { isMainModule } from "../lib/isMain.js";
 
@@ -14,12 +13,29 @@ export async function writeApplicationLetter(): Promise<string> {
   const reportFiles = (await listFilesRecursive(reportsDir)).filter((file) => file.endsWith(".md"));
   const feedbackFiles = (await listFilesRecursive(feedbackDir)).filter((file) => file.endsWith(".md"));
   const publicRepoUrl = env.PUBLIC_SITE_URL || "https://github.com/benzaid32/Purrvocate";
-  const relativeDrafts = draftFiles.map((file) => path.relative(contentDir, file).replaceAll("\\", "/"));
-  const relativeReports = reportFiles.map((file) => path.relative(path.join(contentDir, ".."), file).replaceAll("\\", "/"));
-  const latestFeedback = feedbackFiles
+  const repoContentBaseUrl = `${publicRepoUrl}/blob/main/content`;
+  const publicArtifactsDir = path.join(applicationDir, "artifacts");
+  const latestReport = reportFiles.sort((a, b) => b.localeCompare(a))[0];
+  const latestFeedbackFiles = feedbackFiles
     .sort((a, b) => b.localeCompare(a))
-    .slice(0, 3)
-    .map((file) => path.relative(path.join(contentDir, ".."), file).replaceAll("\\", "/"));
+    .slice(0, 3);
+
+  const relativeDrafts = draftFiles.map((file) => path.relative(contentDir, file).replaceAll("\\", "/"));
+  const publicDraftLinks = relativeDrafts.map((file) => `${repoContentBaseUrl}/${file}`);
+
+  if (latestReport) {
+    await copyFile(latestReport, path.join(publicArtifactsDir, "weekly-report.md"));
+  }
+
+  for (let index = 0; index < latestFeedbackFiles.length; index += 1) {
+    await copyFile(latestFeedbackFiles[index], path.join(publicArtifactsDir, `feedback-${index + 1}.md`));
+  }
+
+  const publicReportLinks = latestReport ? [`${repoContentBaseUrl}/application/artifacts/weekly-report.md`] : [];
+  const publicFeedbackLinks = latestFeedbackFiles.map(
+    (_, index) => `${repoContentBaseUrl}/application/artifacts/feedback-${index + 1}.md`,
+  );
+  const applicationUrl = `${repoContentBaseUrl}/application/revenuecat-agent-application.md`;
 
   const letter = `# Purrvocate: RevenueCat Agentic AI Advocate Application
 
@@ -45,14 +61,15 @@ The core thesis behind Purrvocate is simple: agentic AI will change app developm
 ## Proof Of Work
 - Project repo: ${publicRepoUrl}
 - X profile: https://x.com/${env.X_HANDLE.replace(/^@/, "")}
+- Public application URL: ${applicationUrl}
 - Draft artifacts: ${draftFiles.length}
-- Reports: ${reportFiles.length}
-- Structured feedback memos available: ${feedbackFiles.length}
+- Reports: ${publicReportLinks.length}
+- Structured feedback memos highlighted: ${publicFeedbackLinks.length}
 
 ## Representative Artifacts
-${relativeDrafts.map((file) => `- ${file}`).join("\n")}
-${relativeReports.map((file) => `- ${file}`).join("\n")}
-${latestFeedback.map((file) => `- ${file}`).join("\n")}
+${publicDraftLinks.map((file) => `- ${file}`).join("\n")}
+${publicReportLinks.map((file) => `- ${file}`).join("\n")}
+${publicFeedbackLinks.map((file) => `- ${file}`).join("\n")}
 
 ## Operator Disclosure
 This system is configured for autonomous execution after credentials and publishing rules are defined. The human operator provides infrastructure, credentials, and final accountability for external access. Public identity is maintained at ${env.X_HANDLE}, with ${env.OPERATOR_X_HANDLE} disclosed as the operator.
@@ -69,34 +86,30 @@ This system is configured for autonomous execution after credentials and publish
 - Repo: ${publicRepoUrl}
 - X: https://x.com/${env.X_HANDLE.replace(/^@/, "")}
 - Operator: ${env.OPERATOR_X_HANDLE}
+- Application URL: ${applicationUrl}
 
 ## Content Drafts
-${relativeDrafts.map((file) => `- ${file}`).join("\n")}
+${publicDraftLinks.map((file) => `- ${file}`).join("\n")}
 
 ## Reports
-${relativeReports.map((file) => `- ${file}`).join("\n")}
+${publicReportLinks.map((file) => `- ${file}`).join("\n")}
 
 ## Feedback Highlights
-${latestFeedback.map((file) => `- ${file}`).join("\n")}
+${publicFeedbackLinks.map((file) => `- ${file}`).join("\n")}
 
 ## What This Demonstrates
 - product ingestion and topic extraction
 - public-facing content generation
+- executable X thread generation
 - experiment planning for growth
 - structured product feedback
 - security-first autonomous publishing
 `,
   );
 
-  await publishToGitHub({
-    title: "Purrvocate: RevenueCat Agentic AI Advocate Application",
-    body: letter,
-    target: "gist",
-  });
-
   await publishToX({
     text:
-      `Purrvocate (${env.X_HANDLE}) applied for RevenueCat Agentic AI Advocate. Public application + proof-of-work: ${publicRepoUrl}`,
+      `Purrvocate (${env.X_HANDLE}) applied for RevenueCat Agentic AI Advocate. Public application: ${applicationUrl}`,
     purpose: "application",
   });
 
